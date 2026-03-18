@@ -1,139 +1,24 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forex Forecast Session | Post-Fed Update</title>
-    <style>
-        :root {
-            --bg-color: #131722;
-            --card-bg: #1e222d;
-            --text-color: #d1d4dc;
-            --accent-buy: #26a69a;
-            --accent-sell: #ef5350;
-            --border-color: #434651;
-        }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Trebuchet MS", Roboto, Ubuntu, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        h1 { margin-bottom: 10px; font-size: 2.2rem; }
-        .session-info { color: #787b86; margin-bottom: 30px; }
-        
-        /* Contenedor Principal */
-        .main-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            max-width: 1200px;
-            width: 100%;
-            justify-content: center;
-        }
 
-        /* Tarjeta de Pronóstico */
-        .forecast-card {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 25px;
-            flex: 1 1 350px;
-            max-width: 400px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-        }
-        .pair-title { font-size: 1.8rem; font-weight: bold; margin: 0; }
-        .signal-buy {
-            background-color: var(--accent-buy);
-            color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            display: inline-block;
-            margin-top: 10px;
-        }
-        .levels {
-            margin: 25px 0;
-            border-top: 1px solid var(--border-color);
-            border-bottom: 1px solid var(--border-color);
-            padding: 15px 0;
-        }
-        .level-item { display: flex; justify-content: space-between; margin: 10px 0; }
-        .level-label { color: #787b86; }
-        .level-value { font-weight: bold; font-family: monospace; font-size: 1.1rem; }
-        .rationale { font-size: 0.95rem; line-height: 1.6; color: #b2b5be; }
-
-        /* Contenedor del Gráfico */
-        .chart-container {
-            flex: 2 1 600px;
-            height: 500px;
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            overflow: hidden;
-        }
-    </style>
-</head>
-<body>
-
-    <h1>Panel de Control Forex 2026</h1>
-    <p class="session-info">Pronóstico de la Sesión Actual (GMT): Miercoles 18 de Marzo</p>
-
-    <div class="main-container">
-        <div class="forecast-card">
-            <div class="pair-title">GBP/USD</div>
-            <div class="signal-buy">RECOMENDACIÓN: COMPRA (LONG)</div>
-            
-            <div class="levels">
-                <div class="level-item">
-                    <span class="level-label">Precio Entrada</span>
-                    <span class="level-value">1.2615</span>
-                </div>
-                <div class="level-item">
-                    <span class="level-label">Take Profit</span>
-                    <span class="level-value" style="color: var(--accent-buy);">1.2740</span>
-                </div>
-                <div class="level-item">
-                    <span class="level-label">Stop Loss</span>
-                    <span class="level-value" style="color: var(--accent-sell);">1.2560</span>
-                </div>
-            </div>
-
-            <h3>Análisis Fundamental (Post-Fed)</h3>
-            <p class="rationale">
-                El mercado está reaccionando a la Fed, que sugirió un tono más suave de lo esperado, debilitando al USD. Paralelamente, la inflación en el Reino Unido (IPC a 3.1%) presiona al BoE para mantener tasas altas, fortaleciendo la Libra. Técnica: Patrón de Doble Suelo en H1 con RSI saliendo de sobreventa.
-            </p>
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <title>Forex Live Bot</title>
+        <style>
+            body { background: #131722; color: white; font-family: sans-serif; text-align: center; padding-top: 50px; }
+            .card { background: #1e222d; border: 1px solid #363c4e; padding: 30px; border-radius: 15px; display: inline-block; }
+            .price { font-size: 3rem; color: #26a69a; font-family: monospace; }
+            .info { color: #787b86; margin-top: 20px; }
+        </style>
+    </head>
+    <body>
+        <div class="card">
+            <h1>GBP/USD - EN VIVO</h1>
+            <div class="price">1.32827</div>
+            <p>🎯 Take Profit: <span style="color:#26a69a">1.33227</span></p>
+            <p>🛑 Stop Loss: <span style="color:#ef5350">1.32577</span></p>
+            <div class="info">Última actualización: 2026-03-18 19:26:32 (Sesión Actual)</div>
         </div>
-
-        <div class="chart-container">
-            <div class="tradingview-widget-container" style="height:100%;width:100%">
-                <div id="tradingview_gbpusd" style="height:100%;width:100%"></div>
-                <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
-                <script type="text/javascript">
-                new TradingView.widget(
-                {
-                    "autosize": true,
-                    "symbol": "FX:GBPUSD",
-                    "interval": "60", // 1 hora
-                    "timezone": "Etc/UTC",
-                    "theme": "dark",
-                    "style": "1", // Velas
-                    "locale": "es",
-                    "toolbar_bg": "#f1f3f6",
-                    "enable_publishing": false,
-                    "hide_top_toolbar": true,
-                    "save_image": false,
-                    "container_id": "tradingview_gbpusd"
-                }
-                );
-                </script>
-            </div>
-            </div>
-    </div>
-
-</body>
-</html>
+    </body>
+    </html>
+    
