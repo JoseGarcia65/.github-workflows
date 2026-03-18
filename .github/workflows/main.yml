@@ -1,39 +1,30 @@
-name: Forex Alert Bot y Auto-Update Web
+name: BOT-TRADING-ACTIVO
 
 on:
-  schedule:
-    - cron: '30 7 * * *'   # Londres (07:30 UTC)
-    - cron: '30 12 * * *'  # NY (12:30 UTC)
-    - cron: '30 23 * * *'  # Asia (23:30 UTC)
-  workflow_dispatch:      # Botón para ejecutarlo manualmente ahora mismo
+  workflow_dispatch: # Esto hará que aparezca el botón "Run workflow" de inmediato
 
 jobs:
-  build:
+  run-bot:
     runs-on: ubuntu-latest
     permissions:
-      contents: write    # <--- MUY IMPORTANTE: Permiso para editar archivos
+      contents: write
     steps:
-      - name: Checkout código
-        uses: actions/checkout@v3
-
-      - name: Configurar Python
+      - uses: actions/checkout@v3
+      - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.9'
-
-      - name: Instalar librerías
+      - name: Install
         run: pip install yfinance
-
-      - name: Ejecutar Bot de Análisis
+      - name: Run
         run: python trading_bot.py
         env:
           SENDER_EMAIL: ${{ secrets.SENDER_EMAIL }}
           SENDER_PASSWORD: ${{ secrets.SENDER_PASSWORD }}
-
-      - name: Subir Cambios a la Web
+      - name: Push Changes
         run: |
-          git config --global user.name "TradingBot"
+          git config --global user.name "Bot"
           git config --global user.email "bot@github.com"
           git add index.html
-          git commit -m "Actualización de precios en tiempo real: $(date)" || echo "No hay cambios"
+          git commit -m "Update" || exit 0
           git push
