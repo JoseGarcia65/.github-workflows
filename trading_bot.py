@@ -3,12 +3,13 @@ import os
 import pandas as pd
 from datetime import datetime
 
-def calcular_rsi(data, window=14):
-    delta = data.diff()
+def calcular_rsi_manual(series, window=14):
+    """Calcula el RSI sin librerías externas"""
+    delta = series.diff()
     gain = (delta.where(delta > 0, 0)).rolling(window=window).mean()
     loss = (-delta.where(delta < 0, 0)).rolling(window=window).mean()
     rs = gain / loss
-    return 100 - (100 / (1=rs))
+    return 100 - (100 / (1 + rs))
 
 def obtener_analisis_profundo():
     activos = [
@@ -21,7 +22,7 @@ def obtener_analisis_profundo():
     ]
     
     resultados = []
-    print(f"Analizando {len(activos)} pares con RSI manual...")
+    print(f"Analizando {len(activos)} pares con RSI nativo...")
     
     for simbolo in activos:
         try:
@@ -32,21 +33,22 @@ def obtener_analisis_profundo():
             precio = data['Close'].iloc[-1]
             sma_200 = data['Close'].rolling(window=200).mean().iloc[-1]
             
-            # Cálculo de RSI Manual
-            series_rsi = calcular_rsi(data['Close'])
-            rsi = series_rsi.iloc[-1]
+            # Calculamos el RSI con nuestra nueva función
+            rsi_series = calcular_rsi_manual(data['Close'])
+            rsi = rsi_series.iloc[-1]
             
+            # Lógica de Semáforos
             señal = "ESPERAR"
-            color_web = "#787b86"
+            color_web = "#787b86" 
             icono = "⚪"
 
             if precio > sma_200 and rsi < 45:
                 señal = "COMPRA"
-                color_web = "#26a69a"
+                color_web = "#26a69a" # Verde
                 icono = "🟢"
             elif precio < sma_200 and rsi > 55:
                 señal = "VENTA"
-                color_web = "#ef5350"
+                color_web = "#ef5350" # Rojo
                 icono = "🔴"
 
             dec = 2 if "JPY" in simbolo else 4
@@ -87,7 +89,7 @@ def actualizar_index_html(lista_pares):
     <html lang="es">
     <head>
         <meta charset="UTF-8">
-        <title>Forex Signals Radar</title>
+        <title>Radar de Oportunidades Forex</title>
         <style>
             body {{ background:#131722; color:#d1d4dc; font-family:sans-serif; padding:20px; }}
             .box {{ max-width:1000px; margin:0 auto; background:#1e222d; border-radius:12px; padding:25px; border:1px solid #434651; }}
@@ -101,10 +103,10 @@ def actualizar_index_html(lista_pares):
         <div class="box">
             <div class="status-bar">
                 <div>
-                    <h1 style="margin:0; font-size:1.5rem;">🚨 Radar de Oportunidades</h1>
-                    <p style="color:#787b86; font-size:0.8rem;">Estrategia: SMA 200 + RSI (Cálculo Nativo)</p>
+                    <h1 style="margin:0; font-size:1.5rem;">🚨 Radar Global de Divisas</h1>
+                    <p style="color:#787b86; font-size:0.8rem;">SMA 200 + RSI Momentum (Cálculo Nativo)</p>
                 </div>
-                <button id="updateBtn" class="btn" onclick="pedirToken()">🔄 ESCANEAR MERCADO</button>
+                <button id="updateBtn" class="btn" onclick="pedirToken()">🔄 ESCANEAR</button>
             </div>
             <table>
                 <thead>
@@ -112,17 +114,17 @@ def actualizar_index_html(lista_pares):
                 </thead>
                 <tbody>{filas}</tbody>
             </table>
-            <p style="text-align:center; font-size:0.7rem; color:#434651; margin-top:20px;">Sincronización Global: {fecha} UTC</p>
+            <p style="text-align:center; font-size:0.7rem; color:#434651; margin-top:20px;">Último barrido: {fecha} UTC</p>
         </div>
         <script>
             async function pedirToken() {{
                 let t = localStorage.getItem('gh_token');
-                if(!t) {{ t = prompt("Token:"); if(!t) return; localStorage.setItem('gh_token', t); }}
+                if(!t) {{ t = prompt("Token GitHub:"); if(!t) return; localStorage.setItem('gh_token', t); }}
                 document.getElementById('updateBtn').innerText = "⏳ BUSCANDO SETUPS...";
                 const res = await fetch('https://api.github.com/repos/JoseGarcia65/oraculo_2/actions/workflows/main.yml/dispatches', {{
                     method:'POST', headers:{{ 'Authorization':`Bearer ${{t}}` }}, body: JSON.stringify({{ref:'main'}})
                 }});
-                if(res.ok) {{ alert("🚀 Escaneando... Refresca en 1 min."); setTimeout(()=>location.reload(), 60000); }}
+                if(res.ok) {{ alert("🚀 Escaneando mercado... Refresca en 1 min."); setTimeout(()=>location.reload(), 60000); }}
                 else {{ localStorage.removeItem('gh_token'); location.reload(); }}
             }}
         </script>
