@@ -3,34 +3,24 @@
     <html lang="es">
     <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Forex Intelligence Hub</title>
+        <title>Radar de Oportunidades Forex</title>
         <style>
-            body { background-color: #131722; color: #d1d4dc; font-family: sans-serif; padding: 20px; margin: 0; }
-            .layout-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 20px; max-width: 1400px; margin: 0 auto; }
-            .card { background: #1e222d; border: 1px solid #434651; padding: 25px; border-radius: 12px; text-align: center; }
-            .signal-badge { background-color: #26a69a; color: white; padding: 12px; border-radius: 8px; font-weight: bold; margin-bottom: 15px; text-transform: uppercase; }
-            .price { font-size: 3rem; color: #ffffff; font-family: monospace; margin: 10px 0; }
-            .chart-container { height: 600px; background: #1e222d; border: 1px solid #434651; border-radius: 12px; overflow: hidden; }
-            .btn-update { background: #2962ff; color: white; border: none; padding: 15px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; margin: 20px 0; }
-            .btn-update:disabled { background: #434651; opacity: 0.6; }
-            .history-section { margin-top: 25px; border-top: 1px solid #434651; padding-top: 15px; }
-            .label { color: #787b86; font-size: 0.8rem; text-transform: uppercase; }
-            @media (max-width: 900px) { .layout-grid { grid-template-columns: 1fr; } }
+            body { background:#131722; color:#d1d4dc; font-family:sans-serif; padding:20px; }
+            .box { max-width:1000px; margin:0 auto; background:#1e222d; border-radius:12px; padding:25px; border:1px solid #434651; }
+            table { width:100%; border-collapse:collapse; margin-top:20px; }
+            th { text-align:left; color:#787b86; font-size:0.7rem; text-transform:uppercase; padding:15px; border-bottom:2px solid #434651; }
+            .btn { background:#2962ff; color:white; border:none; padding:12px 25px; border-radius:6px; cursor:pointer; font-weight:bold; }
+            .status-bar { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
         </style>
     </head>
     <body>
-        <h1 style="text-align:center;">Forex Intelligence Hub</h1>
-        <div class="layout-grid">
-            <div class="card">
-                <div class="signal-badge">COMPRA (LONG)</div>
-                <h2>EUR/USD</h2>
-                <div class="price">1.1575</div>
-                
-                <div style="display:flex; justify-content:space-around; border-bottom:1px solid #434651; padding-bottom:15px; margin-top:20px;">
-                    <div><span class="label">TP</span><br><b style="color:#26a69a; font-size:1.4rem;">1.165</b></div>
-                    <div><span class="label">SL</span><br><b style="color:#ef5350; font-size:1.4rem;">1.1495</b></div>
+        <div class="box">
+            <div class="status-bar">
+                <div>
+                    <h1 style="margin:0; font-size:1.5rem;">🚨 Radar Global de Divisas</h1>
+                    <p style="color:#787b86; font-size:0.8rem;">SMA 200 + RSI Momentum (Cálculo Nativo)</p>
                 </div>
+                <button id="updateBtn" class="btn" onclick="pedirToken()">🔄 ESCANEAR</button>
 
                 <button id="updateBtn" class="btn-update" onclick="pedirToken()">🔄 ACTUALIZAR AHORA</button>
 
@@ -87,7 +77,362 @@
                     }
                 </script>
             </div>
+            <table>
+                <thead>
+                    <tr><th>Par</th><th>Precio</th><th>Tendencia</th><th>RSI</th><th>Señal Operativa</th></tr>
+                </thead>
+                <tbody>
+        <tr style="border-bottom: 1px solid #2a2e39;">
+            <td style="padding:15px; font-weight:bold;">USDCHF</td>
+            <td style="padding:15px; font-family:monospace;">0.7878</td>
+            <td style="padding:15px; color:#ef5350; font-size:0.7rem;">BAJISTA</td>
+            <td style="padding:15px; color:#aaa;">68.1</td>
+            <td style="padding:15px;">
+                <span style="background:#ef5350; color:white; padding:6px 12px; border-radius:20px; font-size:0.75rem; font-weight:bold;">
+                    🔴 VENTA
+                </span>
+            </td>
+        </tr>
+        
+        <tr style="border-bottom: 1px solid #2a2e39;">
+            <td style="padding:15px; font-weight:bold;">USDCAD</td>
+            <td style="padding:15px; font-family:monospace;">1.3723</td>
+            <td style="padding:15px; color:#ef5350; font-size:0.7rem;">BAJISTA</td>
+            <td style="padding:15px; color:#aaa;">57.6</td>
+            <td style="padding:15px;">
+                <span style="background:#ef5350; color:white; padding:6px 12px; border-radius:20px; font-size:0.75rem; font-weight:bold;">
+                    🔴 VENTA
+                </span>
+            </td>
+        </tr>
+        
+        <tr style="border-bottom: 1px solid #2a2e39;">
+            <td style="padding:15px; font-weight:bold;">EURCHF</td>
+            <td style="padding:15px; font-family:monospace;">0.9114</td>
+            <td style="padding:15px; color:#ef5350; font-size:0.7rem;">BAJISTA</td>
+            <td style="padding:15px; color:#aaa;">59.3</td>
+            <td style="padding:15px;">
+                <span style="background:#ef5350; color:white; padding:6px 12px; border-radius:20px; font-size:0.75rem; font-weight:bold;">
+                    🔴 VENTA
+                </span>
+            </td>
+        </tr>
+        
+        <tr style="border-bottom: 1px solid #2a2e39;">
+            <td style="padding:15px; font-weight:bold;">GBPCHF</td>
+            <td style="padding:15px; font-family:monospace;">1.051</td>
+            <td style="padding:15px; color:#ef5350; font-size:0.7rem;">BAJISTA</td>
+            <td style="padding:15px; color:#aaa;">74.9</td>
+            <td style="padding:15px;">
+                <span style="background:#ef5350; color:white; padding:6px 12px; border-radius:20px; font-size:0.75rem; font-weight:bold;">
+                    🔴 VENTA
+                </span>
+            </td>
+        </tr>
+        
+        <tr style="border-bottom: 1px solid #2a2e39;">
+            <td style="padding:15px; font-weight:bold;">GBPNZD</td>
+            <td style="padding:15px; font-family:monospace;">2.2855</td>
+            <td style="padding:15px; color:#ef5350; font-size:0.7rem;">BAJISTA</td>
+            <td style="padding:15px; color:#aaa;">65.8</td>
+            <td style="padding:15px;">
+                <span style="background:#ef5350; color:white; padding:6px 12px; border-radius:20px; font-size:0.75rem; font-weight:bold;">
+                    🔴 VENTA
+                </span>
+            </td>
+        </tr>
+        
+        <tr style="border-bottom: 1px solid #2a2e39;">
+            <td style="padding:15px; font-weight:bold;">CHFJPY</td>
+            <td style="padding:15px; font-family:monospace;">202.05</td>
+            <td style="padding:15px; color:#26a69a; font-size:0.7rem;">ALCISTA</td>
+            <td style="padding:15px; color:#aaa;">40.2</td>
+            <td style="padding:15px;">
+                <span style="background:#26a69a; color:white; padding:6px 12px; border-radius:20px; font-size:0.75rem; font-weight:bold;">
+                    🟢 COMPRA
+                </span>
+            </td>
+        </tr>
+        
+        <tr style="border-bottom: 1px solid #2a2e39;">
+            <td style="padding:15px; font-weight:bold;">CADCHF</td>
+            <td style="padding:15px; font-family:monospace;">0.5735</td>
+            <td style="padding:15px; color:#ef5350; font-size:0.7rem;">BAJISTA</td>
+            <td style="padding:15px; color:#aaa;">68.2</td>
+            <td style="padding:15px;">
+                <span style="background:#ef5350; color:white; padding:6px 12px; border-radius:20px; font-size:0.75rem; font-weight:bold;">
+                    🔴 VENTA
+                </span>
+            </td>
+        </tr>
+        
+        <tr style="border-bottom: 1px solid #2a2e39;">
+            <td style="padding:15px; font-weight:bold;">EURUSD</td>
+            <td style="padding:15px; font-family:monospace;">1.1575</td>
+            <td style="padding:15px; color:#ef5350; font-size:0.7rem;">BAJISTA</td>
+            <td style="padding:15px; color:#aaa;">39.2</td>
+            <td style="padding:15px;">
+                <span style="background:#787b86; color:white; padding:6px 12px; border-radius:20px; font-size:0.75rem; font-weight:bold;">
+                    ⚪ ESPERAR
+                </span>
+            </td>
+        </tr>
+        
+        <tr style="border-bottom: 1px solid #2a2e39;">
+            <td style="padding:15px; font-weight:bold;">GBPUSD</td>
+            <td style="padding:15px; font-family:monospace;">1.3345</td>
+            <td style="padding:15px; color:#ef5350; font-size:0.7rem;">BAJISTA</td>
+            <td style="padding:15px; color:#aaa;">45.8</td>
+            <td style="padding:15px;">
+                <span style="background:#787b86; color:white; padding:6px 12px; border-radius:20px; font-size:0.75rem; font-weight:bold;">
+                    ⚪ ESPERAR
+                </span>
+            </td>
+        </tr>
+        
+        <tr style="border-bottom: 1px solid #2a2e39;">
+            <td style="padding:15px; font-weight:bold;">USDJPY</td>
+            <td style="padding:15px; font-family:monospace;">159.22</td>
+            <td style="padding:15px; color:#26a69a; font-size:0.7rem;">ALCISTA</td>
+            <td style="padding:15px; color:#aaa;">66.5</td>
+            <td style="padding:15px;">
+                <span style="background:#787b86; color:white; padding:6px 12px; border-radius:20px; font-size:0.75rem; font-weight:bold;">
+                    ⚪ ESPERAR
+                </span>
+            </td>
+        </tr>
+        
+        <tr style="border-bottom: 1px solid #2a2e39;">
+            <td style="padding:15px; font-weight:bold;">AUDUSD</td>
+            <td style="padding:15px; font-family:monospace;">0.7024</td>
+            <td style="padding:15px; color:#26a69a; font-size:0.7rem;">ALCISTA</td>
+            <td style="padding:15px; color:#aaa;">47.7</td>
+            <td style="padding:15px;">
+                <span style="background:#787b86; color:white; padding:6px 12px; border-radius:20px; font-size:0.75rem; font-weight:bold;">
+                    ⚪ ESPERAR
+                </span>
+            </td>
+        </tr>
+        
+        <tr style="border-bottom: 1px solid #2a2e39;">
+            <td style="padding:15px; font-weight:bold;">NZDUSD</td>
+            <td style="padding:15px; font-family:monospace;">0.5838</td>
+            <td style="padding:15px; color:#ef5350; font-size:0.7rem;">BAJISTA</td>
+            <td style="padding:15px; color:#aaa;">39.7</td>
+            <td style="padding:15px;">
+                <span style="background:#787b86; color:white; padding:6px 12px; border-radius:20px; font-size:0.75rem; font-weight:bold;">
+                    ⚪ ESPERAR
+                </span>
+            </td>
+        </tr>
+        
+        <tr style="border-bottom: 1px solid #2a2e39;">
+            <td style="padding:15px; font-weight:bold;">EURGBP</td>
+            <td style="padding:15px; font-family:monospace;">0.8672</td>
+            <td style="padding:15px; color:#ef5350; font-size:0.7rem;">BAJISTA</td>
+            <td style="padding:15px; color:#aaa;">25.8</td>
+            <td style="padding:15px;">
+                <span style="background:#787b86; color:white; padding:6px 12px; border-radius:20px; font-size:0.75rem; font-weight:bold;">
+                    ⚪ ESPERAR
+                </span>
+            </td>
+        </tr>
+        
+        <tr style="border-bottom: 1px solid #2a2e39;">
+            <td style="padding:15px; font-weight:bold;">EURJPY</td>
+            <td style="padding:15px; font-family:monospace;">184.25</td>
+            <td style="padding:15px; color:#26a69a; font-size:0.7rem;">ALCISTA</td>
+            <td style="padding:15px; color:#aaa;">50.5</td>
+            <td style="padding:15px;">
+                <span style="background:#787b86; color:white; padding:6px 12px; border-radius:20px; font-size:0.75rem; font-weight:bold;">
+                    ⚪ ESPERAR
+                </span>
+            </td>
+        </tr>
+        
+        <tr style="border-bottom: 1px solid #2a2e39;">
+            <td style="padding:15px; font-weight:bold;">EURCAD</td>
+            <td style="padding:15px; font-family:monospace;">1.5875</td>
+            <td style="padding:15px; color:#ef5350; font-size:0.7rem;">BAJISTA</td>
+            <td style="padding:15px; color:#aaa;">39.6</td>
+            <td style="padding:15px;">
+                <span style="background:#787b86; color:white; padding:6px 12px; border-radius:20px; font-size:0.75rem; font-weight:bold;">
+                    ⚪ ESPERAR
+                </span>
+            </td>
+        </tr>
+        
+        <tr style="border-bottom: 1px solid #2a2e39;">
+            <td style="padding:15px; font-weight:bold;">EURAUD</td>
+            <td style="padding:15px; font-family:monospace;">1.647</td>
+            <td style="padding:15px; color:#ef5350; font-size:0.7rem;">BAJISTA</td>
+            <td style="padding:15px; color:#aaa;">42.3</td>
+            <td style="padding:15px;">
+                <span style="background:#787b86; color:white; padding:6px 12px; border-radius:20px; font-size:0.75rem; font-weight:bold;">
+                    ⚪ ESPERAR
+                </span>
+            </td>
+        </tr>
+        
+        <tr style="border-bottom: 1px solid #2a2e39;">
+            <td style="padding:15px; font-weight:bold;">EURNZD</td>
+            <td style="padding:15px; font-family:monospace;">1.9821</td>
+            <td style="padding:15px; color:#ef5350; font-size:0.7rem;">BAJISTA</td>
+            <td style="padding:15px; color:#aaa;">54.9</td>
+            <td style="padding:15px;">
+                <span style="background:#787b86; color:white; padding:6px 12px; border-radius:20px; font-size:0.75rem; font-weight:bold;">
+                    ⚪ ESPERAR
+                </span>
+            </td>
+        </tr>
+        
+        <tr style="border-bottom: 1px solid #2a2e39;">
+            <td style="padding:15px; font-weight:bold;">GBPJPY</td>
+            <td style="padding:15px; font-family:monospace;">212.44</td>
+            <td style="padding:15px; color:#26a69a; font-size:0.7rem;">ALCISTA</td>
+            <td style="padding:15px; color:#aaa;">65.2</td>
+            <td style="padding:15px;">
+                <span style="background:#787b86; color:white; padding:6px 12px; border-radius:20px; font-size:0.75rem; font-weight:bold;">
+                    ⚪ ESPERAR
+                </span>
+            </td>
+        </tr>
+        
+        <tr style="border-bottom: 1px solid #2a2e39;">
+            <td style="padding:15px; font-weight:bold;">GBPCAD</td>
+            <td style="padding:15px; font-family:monospace;">1.8308</td>
+            <td style="padding:15px; color:#ef5350; font-size:0.7rem;">BAJISTA</td>
+            <td style="padding:15px; color:#aaa;">49.1</td>
+            <td style="padding:15px;">
+                <span style="background:#787b86; color:white; padding:6px 12px; border-radius:20px; font-size:0.75rem; font-weight:bold;">
+                    ⚪ ESPERAR
+                </span>
+            </td>
+        </tr>
+        
+        <tr style="border-bottom: 1px solid #2a2e39;">
+            <td style="padding:15px; font-weight:bold;">GBPAUD</td>
+            <td style="padding:15px; font-family:monospace;">1.8996</td>
+            <td style="padding:15px; color:#ef5350; font-size:0.7rem;">BAJISTA</td>
+            <td style="padding:15px; color:#aaa;">50.1</td>
+            <td style="padding:15px;">
+                <span style="background:#787b86; color:white; padding:6px 12px; border-radius:20px; font-size:0.75rem; font-weight:bold;">
+                    ⚪ ESPERAR
+                </span>
+            </td>
+        </tr>
+        
+        <tr style="border-bottom: 1px solid #2a2e39;">
+            <td style="padding:15px; font-weight:bold;">CADJPY</td>
+            <td style="padding:15px; font-family:monospace;">116.0</td>
+            <td style="padding:15px; color:#26a69a; font-size:0.7rem;">ALCISTA</td>
+            <td style="padding:15px; color:#aaa;">63.6</td>
+            <td style="padding:15px;">
+                <span style="background:#787b86; color:white; padding:6px 12px; border-radius:20px; font-size:0.75rem; font-weight:bold;">
+                    ⚪ ESPERAR
+                </span>
+            </td>
+        </tr>
+        
+        <tr style="border-bottom: 1px solid #2a2e39;">
+            <td style="padding:15px; font-weight:bold;">AUDJPY</td>
+            <td style="padding:15px; font-family:monospace;">111.83</td>
+            <td style="padding:15px; color:#26a69a; font-size:0.7rem;">ALCISTA</td>
+            <td style="padding:15px; color:#aaa;">56.7</td>
+            <td style="padding:15px;">
+                <span style="background:#787b86; color:white; padding:6px 12px; border-radius:20px; font-size:0.75rem; font-weight:bold;">
+                    ⚪ ESPERAR
+                </span>
+            </td>
+        </tr>
+        
+        <tr style="border-bottom: 1px solid #2a2e39;">
+            <td style="padding:15px; font-weight:bold;">NZDJPY</td>
+            <td style="padding:15px; font-family:monospace;">92.93</td>
+            <td style="padding:15px; color:#26a69a; font-size:0.7rem;">ALCISTA</td>
+            <td style="padding:15px; color:#aaa;">46.6</td>
+            <td style="padding:15px;">
+                <span style="background:#787b86; color:white; padding:6px 12px; border-radius:20px; font-size:0.75rem; font-weight:bold;">
+                    ⚪ ESPERAR
+                </span>
+            </td>
+        </tr>
+        
+        <tr style="border-bottom: 1px solid #2a2e39;">
+            <td style="padding:15px; font-weight:bold;">AUDCAD</td>
+            <td style="padding:15px; font-family:monospace;">0.9629</td>
+            <td style="padding:15px; color:#26a69a; font-size:0.7rem;">ALCISTA</td>
+            <td style="padding:15px; color:#aaa;">49.0</td>
+            <td style="padding:15px;">
+                <span style="background:#787b86; color:white; padding:6px 12px; border-radius:20px; font-size:0.75rem; font-weight:bold;">
+                    ⚪ ESPERAR
+                </span>
+            </td>
+        </tr>
+        
+        <tr style="border-bottom: 1px solid #2a2e39;">
+            <td style="padding:15px; font-weight:bold;">AUDCHF</td>
+            <td style="padding:15px; font-family:monospace;">0.5527</td>
+            <td style="padding:15px; color:#26a69a; font-size:0.7rem;">ALCISTA</td>
+            <td style="padding:15px; color:#aaa;">60.1</td>
+            <td style="padding:15px;">
+                <span style="background:#787b86; color:white; padding:6px 12px; border-radius:20px; font-size:0.75rem; font-weight:bold;">
+                    ⚪ ESPERAR
+                </span>
+            </td>
+        </tr>
+        
+        <tr style="border-bottom: 1px solid #2a2e39;">
+            <td style="padding:15px; font-weight:bold;">AUDNZD</td>
+            <td style="padding:15px; font-family:monospace;">1.2029</td>
+            <td style="padding:15px; color:#26a69a; font-size:0.7rem;">ALCISTA</td>
+            <td style="padding:15px; color:#aaa;">66.3</td>
+            <td style="padding:15px;">
+                <span style="background:#787b86; color:white; padding:6px 12px; border-radius:20px; font-size:0.75rem; font-weight:bold;">
+                    ⚪ ESPERAR
+                </span>
+            </td>
+        </tr>
+        
+        <tr style="border-bottom: 1px solid #2a2e39;">
+            <td style="padding:15px; font-weight:bold;">NZDCAD</td>
+            <td style="padding:15px; font-family:monospace;">0.8007</td>
+            <td style="padding:15px; color:#ef5350; font-size:0.7rem;">BAJISTA</td>
+            <td style="padding:15px; color:#aaa;">40.0</td>
+            <td style="padding:15px;">
+                <span style="background:#787b86; color:white; padding:6px 12px; border-radius:20px; font-size:0.75rem; font-weight:bold;">
+                    ⚪ ESPERAR
+                </span>
+            </td>
+        </tr>
+        
+        <tr style="border-bottom: 1px solid #2a2e39;">
+            <td style="padding:15px; font-weight:bold;">NZDCHF</td>
+            <td style="padding:15px; font-family:monospace;">0.4599</td>
+            <td style="padding:15px; color:#ef5350; font-size:0.7rem;">BAJISTA</td>
+            <td style="padding:15px; color:#aaa;">52.8</td>
+            <td style="padding:15px;">
+                <span style="background:#787b86; color:white; padding:6px 12px; border-radius:20px; font-size:0.75rem; font-weight:bold;">
+                    ⚪ ESPERAR
+                </span>
+            </td>
+        </tr>
+        </tbody>
+            </table>
+            <p style="text-align:center; font-size:0.7rem; color:#434651; margin-top:20px;">Último barrido: 2026-03-21 00:07:06 UTC</p>
         </div>
+        <script>
+            async function pedirToken() {
+                let t = localStorage.getItem('gh_token');
+                if(!t) { t = prompt("Token GitHub:"); if(!t) return; localStorage.setItem('gh_token', t); }
+                document.getElementById('updateBtn').innerText = "⏳ BUSCANDO SETUPS...";
+                const res = await fetch('https://api.github.com/repos/JoseGarcia65/oraculo_2/actions/workflows/main.yml/dispatches', {
+                    method:'POST', headers:{ 'Authorization':`Bearer ${t}` }, body: JSON.stringify({ref:'main'})
+                });
+                if(res.ok) { alert("🚀 Escaneando mercado... Refresca en 1 min."); setTimeout(()=>location.reload(), 60000); }
+                else { localStorage.removeItem('gh_token'); location.reload(); }
+            }
+        </script>
     </body>
     </html>
     
