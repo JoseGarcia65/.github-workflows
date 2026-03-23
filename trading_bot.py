@@ -4,50 +4,25 @@ import pandas as pd
 from datetime import datetime
 
 def calcular_rsi_manual(series, window=14):
-    """Calcula el RSI sin librerías externas para evitar errores en GitHub Actions"""
     delta = series.diff()
     gain = (delta.where(delta > 0, 0)).rolling(window=window).mean()
     loss = (-delta.where(delta < 0, 0)).rolling(window=window).mean()
     rs = gain / loss
     return 100 - (100 / (1 + rs))
 
-def verificar_mitigacion_h4(simbolo):
-    """
-    SMC Logic: Verifica si hubo una mecha (shadow) que mitigó el lado contrario 
-    en el timeframe de 4 horas antes de la dirección actual.
-    """
-    try:
-        ticker = yf.Ticker(simbolo)
-        df_h4 = ticker.history(period="3d", interval="1h") # Usamos 1h para reconstruir H4 con precisión
-        if len(df_h4) < 8: return False, False
-        
-        # Agrupamos en bloques de 4 para simular velas de 4h
-        df_h4 = df_h4.resample('4h').agg({'Open': 'first', 'High': 'max', 'Low': 'min', 'Close': 'last'})
-        
-        ultima = df_h4.iloc[-1]
-        previa = df_h4.iloc[-2]
-        
-        # Mitigación para COMPRA: La vela previa barrió por debajo del Open (mecha inferior larga)
-        mit_baja = (previa['Low'] < previa['Open']) and (ultima['Close'] > ultima['Open'])
-        # Mitigación para VENTA: La vela previa barrió por arriba del Open (mecha superior larga)
-        mit_alta = (previa['High'] > previa['Open']) and (ultima['Close'] < ultima['Open'])
-        
-        return mit_baja, mit_alta
-    except:
-        return False, False
-
-def obtener_top_3_setups():
+def obtener_datos_con_niveles():
     activos = [
         "EURUSD=X", "GBPUSD=X", "USDJPY=X", "USDCHF=X", "USDCAD=X", "AUDUSD=X", "NZDUSD=X",
         "EURJPY=X", "GBPJPY=X", "EURGBP=X", "AUDJPY=X", "GBPAUD=X", "CHFJPY=X"
     ]
     
     setups_finales = []
-    print("Iniciando escaneo con Filtro de Mitigación H4...")
+    print("Escaneando mercado: Buscando Mitigaciones y calculando Niveles...")
     
     for simbolo in activos:
         try:
             ticker = yf.Ticker(simbolo)
+            # 1. Datos Diarios (Tendencia)
             data_d = ticker.history(period="250d", interval="1d")
             if len(data_d) < 200: continue
             
@@ -55,153 +30,120 @@ def obtener_top_3_setups():
             sma_200 = data_d['Close'].rolling(window=200).mean().iloc[-1]
             rsi = calcular_rsi_manual(data_d['Close']).iloc[-1]
             
-            # 1. Filtro de Tendencia Macro
+            # 2. Datos H4 (Mitigación CRT)
+            data_h4 = ticker.history(period="5d", interval="1h")
+            data_h4 = data_h4.resample('4h').agg({'Open': 'first', 'High': 'max', 'Low': 'min', 'Close': 'last'})
+            
+            vela_mitigacion = data_h4.iloc[-2] # La vela previa que hizo el barrido
+            
             es_alcista = precio > sma_200 and rsi < 55
             es_bajista = precio < sma_200 and rsi > 45
             
-            if not (es_alcista or es_bajista): continue
-
-            # 2. Filtro de Mitigación (CRT) en H4
-            mit_baja, mit_alta = verificar_mitigacion_h4(simbolo)
-            
             señal = None
-            fuerza = 0
-            if es_alcista and mit_baja:
+            sl, tp = 0, 0
+            dec = 2 if "JPY" in simbolo else 4
+
+            if es_alcista and (vela_mitigacion['Low'] < vela_mitigacion['Open']):
                 señal = "COMPRA"
-                fuerza = 60 - rsi # Prioriza RSIs más bajos en compras
-            elif es_bajista and mit_alta:
+                # SL debajo del mínimo de la mecha de mitigación - 5 pips
+                sl = vela_mitigacion['Low'] - (0.0005 if dec == 4 else 0.05)
+                # TP con ratio 1:2 basado en riesgo
+                riesgo = precio - sl
+                tp = precio + (riesgo * 2)
+                fuerza = 60 - rsi
+
+            elif es_bajista and (vela_mitigacion['High'] > vela_mitigacion['Open']):
                 señal = "VENTA"
-                fuerza = rsi - 40 # Prioriza RSIs más altos en ventas
+                # SL encima del máximo de la mecha de mitigación + 5 pips
+                sl = vela_mitigacion['High'] + (0.0005 if dec == 4 else 0.05)
+                riesgo = sl - precio
+                tp = precio - (riesgo * 2)
+                fuerza = rsi - 40
 
             if señal:
-                dec = 2 if "JPY" in simbolo else 4
                 setups_finales.append({
                     "par": simbolo.replace("=X", ""),
                     "precio": round(precio, dec),
                     "rsi": round(rsi, 1),
                     "señal": señal,
-                    "fuerza": fuerza,
-                    "nota": "CRT Mitigado (H4)"
+                    "sl": round(sl, dec),
+                    "tp": round(tp, dec),
+                    "fuerza": fuerza
                 })
         except: continue
             
-    # Ordenamos por fuerza del setup y tomamos los 3 mejores
     setups_finales.sort(key=lambda x: x['fuerza'], reverse=True)
     return setups_finales[:3]
 
 def actualizar_index_html(top_setups):
     fecha_utc = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    
-    # Configuración del botón de TradingView para el par #1
-    if top_setups:
-        top_par_base = top_setups[0]['par']
-        top_par_tv = f"FX:{top_par_base.replace('/', '')}"
-    else:
-        top_par_base = "EUR/USD"
-        top_par_tv = "FX:EURUSD"
+    top_par_tv = f"FX:{top_setups[0]['par'].replace('/', '')}" if top_setups else "FX:EURUSD"
+    top_par_nombre = top_setups[0]['par'] if top_setups else "EUR/USD"
 
     cards_html = ""
     if not top_setups:
-        cards_html = """
-        <div style="grid-column: span 3; background:#2a2e39; padding:50px; border-radius:15px; text-align:center; border:1px solid #434651;">
-            <h2 style="color:#787b86; margin:0;">⚪ Sin señales institucionales claras</h2>
-            <p style="color:#787b86;">Esperando mitigación de rango en H4...</p>
-        </div>
-        """
+        cards_html = "<div style='grid-column: span 3; background:#2a2e39; padding:50px; border-radius:15px; text-align:center;'><h2>⚪ Esperando Mitigación H4</h2></div>"
     else:
         for p in top_setups:
             color = "#26a69a" if p['señal'] == "COMPRA" else "#ef5350"
             cards_html += f"""
-            <div style="background:#1e222d; border-radius:12px; padding:25px; border:1px solid #434651; border-top:5px solid {color}; transition: 0.3s;">
-                <div style="color:{color}; font-size:0.7rem; font-weight:bold; text-transform:uppercase; letter-spacing:1px;">{p['nota']}</div>
-                <h2 style="margin:10px 0; font-size:2rem; color:#fff;">{p['par']}</h2>
-                <div style="font-size:2.5rem; font-family:monospace; font-weight:bold; color:#fff;">{p['precio']}</div>
-                <div style="margin-top:20px; display:flex; justify-content:space-between; align-items:center;">
-                    <span style="background:{color}; color:white; padding:6px 15px; border-radius:4px; font-weight:bold; font-size:0.9rem;">{p['señal']}</span>
-                    <span style="color:#787b86; font-size:0.85rem;">RSI: <b>{p['rsi']}</b></span>
+            <div style="background:#1e222d; border-radius:12px; padding:20px; border:1px solid #434651; border-top:5px solid {color};">
+                <div style="color:{color}; font-weight:bold; font-size:0.75rem;">SEÑAL CRT VALIDADA</div>
+                <h2 style="margin:10px 0; font-size:1.8rem; color:#fff;">{p['par']}</h2>
+                <div style="font-size:2.2rem; font-family:monospace; font-weight:bold; color:#fff; margin-bottom:15px;">{p['precio']}</div>
+                
+                <div style="display:flex; justify-content:space-between; background:#2a2e39; padding:10px; border-radius:8px; margin-bottom:15px;">
+                    <div style="text-align:center;"><span style="color:#787b86; font-size:0.7rem;">STOP LOSS</span><br><b style="color:#ef5350;">{p['sl']}</b></div>
+                    <div style="text-align:center;"><span style="color:#787b86; font-size:0.7rem;">TAKE PROFIT</span><br><b style="color:#26a69a;">{p['tp']}</b></div>
+                </div>
+
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span style="background:{color}; color:white; padding:5px 12px; border-radius:4px; font-weight:bold;">{p['señal']}</span>
+                    <span style="color:#787b86; font-size:0.8rem;">RSI: {p['rsi']}</span>
                 </div>
             </div>
             """
 
-    html_full = f"""
+    html_content = f"""
     <!DOCTYPE html>
     <html lang="es">
     <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Oráculo VIP | Radar Institucional</title>
+        <title>Oráculo VIP | Niveles Pro</title>
         <style>
-            body {{ background:#131722; color:#d1d4dc; font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding:20px; margin:0; }}
-            .wrapper {{ max-width:1100px; margin:0 auto; }}
-            .header {{ display:flex; justify-content:space-between; align-items:center; margin-bottom:40px; border-bottom:1px solid #2a2e39; padding-bottom:20px; }}
-            .grid {{ display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:25px; }}
-            .btn-update {{ background:#2962ff; color:white; border:none; padding:14px 28px; border-radius:8px; cursor:pointer; font-weight:bold; font-size:0.9rem; transition:0.3s; }}
-            .btn-update:hover {{ background:#1e4bd8; transform: scale(1.02); }}
-            .btn-tv {{ background:#ffffff; color:#131722; display:flex; align-items:center; justify-content:center; padding:20px; border-radius:10px; text-decoration:none; font-weight:bold; margin-top:40px; font-size:1.1rem; transition:0.3s; border: 2px solid transparent; }}
-            .btn-tv:hover {{ background:#f0f3fa; border-color: #2962ff; }}
-            .footer {{ text-align:center; margin-top:60px; color:#434651; font-size:0.75rem; border-top: 1px solid #2a2e39; padding-top:20px; }}
+            body {{ background:#131722; color:#d1d4dc; font-family:sans-serif; padding:20px; }}
+            .container {{ max-width:1100px; margin:0 auto; }}
+            .grid {{ display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:20px; }}
+            .btn-update {{ background:#2962ff; color:white; border:none; padding:12px 24px; border-radius:8px; cursor:pointer; font-weight:bold; }}
+            .btn-tv {{ background:white; color:#131722; display:block; text-align:center; padding:18px; border-radius:10px; text-decoration:none; font-weight:bold; margin-top:30px; border: 2px solid #2962ff; }}
         </style>
     </head>
     <body>
-        <div class="wrapper">
-            <div class="header">
-                <div>
-                    <h1 style="margin:0; font-size:1.8rem; color:#fff;">🚨 Radar VIP: Mitigación H4</h1>
-                    <p style="color:#787b86; margin:5px 0 0 0;">Filtro SMA 200 + CRT (Context Range Trade)</p>
-                </div>
-                <button class="btn-update" id="upBtn" onclick="ejecutarAccion()">🔄 ACTUALIZAR SCANNER</button>
+        <div class="container">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
+                <h1>🚨 Radar VIP: Niveles CRT</h1>
+                <button class="btn-update" onclick="ejecutar()">🔄 ESCANEAR</button>
             </div>
-
-            <div class="grid">
-                {cards_html}
-            </div>
-
-            {f'''
-            <a href="https://es.tradingview.com/chart/?symbol={top_par_tv}" target="_blank" class="btn-tv">
-                📊 ABRIR GRÁFICO PROFESIONAL DE {top_par_base} (TOP #1)
-            </a>
-            ''' if top_setups else ''}
-
-            <div class="footer">
-                Sincronización de Red: {fecha_utc} UTC | Basado en algoritmos de Mitigación Institutional
-            </div>
+            <div class="grid">{cards_html}</div>
+            {f'<a href="https://es.tradingview.com/chart/?symbol={top_par_tv}" target="_blank" class="btn-tv">📊 ANALIZAR {top_par_nombre} EN TRADINGVIEW</a>' if top_setups else ''}
+            <p style="text-align:center; color:#434651; font-size:0.7rem; margin-top:40px;">Sincronizado: {fecha_utc} UTC</p>
         </div>
-
         <script>
-            async function ejecutarAccion() {{
+            async function ejecutar() {{
                 let t = localStorage.getItem('gh_token');
-                if(!t) {{ 
-                    t = prompt("Introduce tu Token de GitHub:"); 
-                    if(!t) return; 
-                    localStorage.setItem('gh_token', t); 
-                }}
-                
-                const btn = document.getElementById('upBtn');
-                btn.innerText = "⏳ ESCANEANDO CRT...";
-                btn.disabled = true;
-
+                if(!t) {{ t = prompt("Token:"); if(!t) return; localStorage.setItem('gh_token', t); }}
                 const res = await fetch('https://api.github.com/repos/JoseGarcia65/oraculo_2/actions/workflows/main.yml/dispatches', {{
-                    method:'POST',
-                    headers:{{ 'Authorization': 'Bearer ' + t }},
-                    body: JSON.stringify({{ ref: 'main' }})
+                    method:'POST', headers:{{ 'Authorization': 'Bearer ' + t }}, body: JSON.stringify({{ ref: 'main' }})
                 }});
-
-                if(res.ok) {{
-                    alert("🚀 Scanner iniciado. Los 3 mejores pares con mitigación aparecerán en 60s.");
-                    setTimeout(() => location.reload(), 60000);
-                }} else {{
-                    alert("Error de Token.");
-                    localStorage.removeItem('gh_token');
-                    location.reload();
-                }}
+                if(res.ok) {{ alert("🚀 Actualizando niveles..."); setTimeout(() => location.reload(), 60000); }}
+                else {{ localStorage.removeItem('gh_token'); location.reload(); }}
             }}
         </script>
     </body>
     </html>
     """
     with open("index.html", "w", encoding="utf-8") as f:
-        f.write(html_full)
+        f.write(html_content)
 
 if __name__ == "__main__":
-    top_3 = obtener_top_3_setups()
-    actualizar_index_html(top_3)
+    actualizar_index_html(obtener_datos_con_niveles())
