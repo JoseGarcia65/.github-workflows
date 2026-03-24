@@ -3,82 +3,101 @@
     <html lang="es">
     <head>
         <meta charset="UTF-8">
-        <title>Oráculo VIP_v5 | Momentum CRT</title>
+        <title>Oráculo VIP | Radar</title>
         <style>
-            body { background:#131722; color:#d1d4dc; font-family:-apple-system, sans-serif; padding:20px; }
+            body { background:#131722; color:#d1d4dc; font-family:sans-serif; padding:20px; }
             .container { max-width:1100px; margin:0 auto; }
             .grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:20px; }
-            .btn-update { background:#2962ff; color:white; border:none; padding:12px 24px; border-radius:8px; cursor:pointer; font-weight:bold; }
+            .btn-update { background:#2962ff; color:white; border:none; padding:12px 24px; border-radius:8px; cursor:pointer; font-weight:bold; float:right; }
             .btn-tv { background:white; color:#131722; display:block; text-align:center; padding:18px; border-radius:10px; text-decoration:none; font-weight:bold; margin-top:30px; border: 2px solid #2962ff; }
         </style>
     </head>
     <body>
         <div class="container">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
-                <h1>🚨 Radar VIP: Momentum & Mitigación</h1>
-                <button class="btn-update" onclick="ejecutar()">🔄 ESCANEAR</button>
+                <h1>🚨 Radar VIP: Mitigación</h1>
+                <button class="btn-update" id="upBtn" onclick="lanzarScan()">🔄 ESCANEAR</button>
             </div>
             <div class="grid">
+            <div style="background:#1e222d; border-radius:12px; padding:25px; border:1px solid #434651; border-top:5px solid #ef5350;">
+                <div style="color:#ef5350; font-weight:bold; font-size:0.75rem;">MOMENTUM VALIDADO</div>
+                <h2 style="margin:10px 0; font-size:1.8rem; color:#fff;">GBPJPY</h2>
+                <div style="font-size:2.2rem; font-family:monospace; font-weight:bold; color:#fff; margin-bottom:15px;">212.74</div>
+                <div style="display:flex; justify-content:space-between; background:#2a2e39; padding:10px; border-radius:8px; margin-bottom:15px;">
+                    <div style="text-align:center;"><span style="color:#787b86; font-size:0.7rem;">SL</span><br><b style="color:#ef5350;">212.88</b></div>
+                    <div style="text-align:center;"><span style="color:#787b86; font-size:0.7rem;">TP (1:2)</span><br><b style="color:#26a69a;">212.45</b></div>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span style="background:#ef5350; color:white; padding:5px 12px; border-radius:4px; font-weight:bold;">VENTA</span>
+                    <span style="color:#787b86; font-size:0.8rem;">RSI: 64.3</span>
+                </div>
+            </div>
+            
             <div style="background:#1e222d; border-radius:12px; padding:25px; border:1px solid #434651; border-top:5px solid #26a69a;">
-                <div style="color:#26a69a; font-weight:bold; font-size:0.75rem; letter-spacing:1px;">MITIGACIÓN + MOMENTUM</div>
+                <div style="color:#26a69a; font-weight:bold; font-size:0.75rem;">MOMENTUM VALIDADO</div>
                 <h2 style="margin:10px 0; font-size:1.8rem; color:#fff;">EURGBP</h2>
                 <div style="font-size:2.2rem; font-family:monospace; font-weight:bold; color:#fff; margin-bottom:15px;">0.8646</div>
-                
                 <div style="display:flex; justify-content:space-between; background:#2a2e39; padding:10px; border-radius:8px; margin-bottom:15px;">
-                    <div style="text-align:center;"><span style="color:#787b86; font-size:0.7rem;">SL (Mecha H4)</span><br><b style="color:#ef5350;">0.8635</b></div>
-                    <div style="text-align:center;"><span style="color:#787b86; font-size:0.7rem;">TP (Ratio 1:2)</span><br><b style="color:#26a69a;">0.8666</b></div>
+                    <div style="text-align:center;"><span style="color:#787b86; font-size:0.7rem;">SL</span><br><b style="color:#ef5350;">0.8647</b></div>
+                    <div style="text-align:center;"><span style="color:#787b86; font-size:0.7rem;">TP (1:2)</span><br><b style="color:#26a69a;">0.8644</b></div>
                 </div>
-
                 <div style="display:flex; justify-content:space-between; align-items:center;">
                     <span style="background:#26a69a; color:white; padding:5px 12px; border-radius:4px; font-weight:bold;">COMPRA</span>
-                    <span style="color:#787b86; font-size:0.8rem;">RSI Momentum: <b>27.1</b></span>
+                    <span style="color:#787b86; font-size:0.8rem;">RSI: 36.8</span>
                 </div>
             </div>
             
             <div style="background:#1e222d; border-radius:12px; padding:25px; border:1px solid #434651; border-top:5px solid #ef5350;">
-                <div style="color:#ef5350; font-weight:bold; font-size:0.75rem; letter-spacing:1px;">MITIGACIÓN + MOMENTUM</div>
-                <h2 style="margin:10px 0; font-size:1.8rem; color:#fff;">GBPJPY</h2>
-                <div style="font-size:2.2rem; font-family:monospace; font-weight:bold; color:#fff; margin-bottom:15px;">212.69</div>
-                
+                <div style="color:#ef5350; font-weight:bold; font-size:0.75rem;">MOMENTUM VALIDADO</div>
+                <h2 style="margin:10px 0; font-size:1.8rem; color:#fff;">USDCAD</h2>
+                <div style="font-size:2.2rem; font-family:monospace; font-weight:bold; color:#fff; margin-bottom:15px;">1.3763</div>
                 <div style="display:flex; justify-content:space-between; background:#2a2e39; padding:10px; border-radius:8px; margin-bottom:15px;">
-                    <div style="text-align:center;"><span style="color:#787b86; font-size:0.7rem;">SL (Mecha H4)</span><br><b style="color:#ef5350;">212.84</b></div>
-                    <div style="text-align:center;"><span style="color:#787b86; font-size:0.7rem;">TP (Ratio 1:2)</span><br><b style="color:#26a69a;">212.39</b></div>
+                    <div style="text-align:center;"><span style="color:#787b86; font-size:0.7rem;">SL</span><br><b style="color:#ef5350;">1.379</b></div>
+                    <div style="text-align:center;"><span style="color:#787b86; font-size:0.7rem;">TP (1:2)</span><br><b style="color:#26a69a;">1.3709</b></div>
                 </div>
-
                 <div style="display:flex; justify-content:space-between; align-items:center;">
                     <span style="background:#ef5350; color:white; padding:5px 12px; border-radius:4px; font-weight:bold;">VENTA</span>
-                    <span style="color:#787b86; font-size:0.8rem;">RSI Momentum: <b>62.2</b></span>
-                </div>
-            </div>
-            
-            <div style="background:#1e222d; border-radius:12px; padding:25px; border:1px solid #434651; border-top:5px solid #ef5350;">
-                <div style="color:#ef5350; font-weight:bold; font-size:0.75rem; letter-spacing:1px;">MITIGACIÓN + MOMENTUM</div>
-                <h2 style="margin:10px 0; font-size:1.8rem; color:#fff;">USDCHF</h2>
-                <div style="font-size:2.2rem; font-family:monospace; font-weight:bold; color:#fff; margin-bottom:15px;">0.7862</div>
-                
-                <div style="display:flex; justify-content:space-between; background:#2a2e39; padding:10px; border-radius:8px; margin-bottom:15px;">
-                    <div style="text-align:center;"><span style="color:#787b86; font-size:0.7rem;">SL (Mecha H4)</span><br><b style="color:#ef5350;">0.7888</b></div>
-                    <div style="text-align:center;"><span style="color:#787b86; font-size:0.7rem;">TP (Ratio 1:2)</span><br><b style="color:#26a69a;">0.7809</b></div>
-                </div>
-
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <span style="background:#ef5350; color:white; padding:5px 12px; border-radius:4px; font-weight:bold;">VENTA</span>
-                    <span style="color:#787b86; font-size:0.8rem;">RSI Momentum: <b>58.7</b></span>
+                    <span style="color:#787b86; font-size:0.8rem;">RSI: 60.3</span>
                 </div>
             </div>
             </div>
-            <a href="https://es.tradingview.com/chart/?symbol=FX:EURGBP" target="_blank" class="btn-tv">📊 ANALIZAR EURGBP EN TRADINGVIEW</a>
-            <p style="text-align:center; color:#434651; font-size:0.7rem; margin-top:40px;">Sincronización: 2026-03-23 22:58:15 UTC | Basado en Agotamiento RSI</p>
+            <a href="https://es.tradingview.com/chart/?symbol=FX:GBPJPY" target="_blank" class="btn-tv">📊 ANALIZAR GBPJPY EN TRADINGVIEW</a>
+            <p style="text-align:center; color:#434651; font-size:0.7rem; margin-top:40px;">Actualizado: 2026-03-24 22:39:01 UTC</p>
         </div>
+
         <script>
-            async function ejecutar() {
+            async function lanzarScan() {
                 let t = localStorage.getItem('gh_token');
-                if(!t) { t = prompt("Token:"); if(!t) return; localStorage.setItem('gh_token', t); }
-                const res = await fetch('https://api.github.com/repos/JoseGarcia65/oraculo_2/actions/workflows/main.yml/dispatches', {
-                    method:'POST', headers:{ 'Authorization': 'Bearer ' + t }, body: JSON.stringify({ ref: 'main' })
-                });
-                if(res.ok) { alert("🚀 Escaneando momentum..."); setTimeout(() => location.reload(), 60000); }
-                else { localStorage.removeItem('gh_token'); location.reload(); }
+                if(!t) { 
+                    t = prompt("Introduce tu Token de GitHub:"); 
+                    if(!t) return; 
+                    localStorage.setItem('gh_token', t); 
+                }
+                
+                document.getElementById('upBtn').innerText = "⏳ ENVIANDO...";
+                
+                try {
+                    const res = await fetch('https://api.github.com/repos/JoseGarcia65/oraculo_2/actions/workflows/main.yml/dispatches', {
+                        method: 'POST',
+                        headers: { 
+                            'Authorization': 'Bearer ' + t,
+                            'Accept': 'application/vnd.github.v3+json'
+                        },
+                        body: JSON.stringify({ ref: 'main' })
+                    });
+
+                    if(res.ok) {
+                        alert("🚀 Escaneo iniciado. Refresca en 60 segundos.");
+                        setTimeout(() => location.reload(), 60000);
+                    } else {
+                        alert("Error de Token o Repositorio. Verifica tus permisos.");
+                        localStorage.removeItem('gh_token');
+                        location.reload();
+                    }
+                } catch (e) {
+                    alert("Error de conexión.");
+                    location.reload();
+                }
             }
         </script>
     </body>
